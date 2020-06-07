@@ -84,7 +84,7 @@ async def split_large_files(input_file):
         file_genertor_command = [
             "split",
             "--numeric-suffixes=1",
-            "--suffix-length=5",
+            "--suffix-length=3",
             f"--bytes={MAX_TG_SPLIT_FILE_SIZE}",
             input_file,
             o_d_t
