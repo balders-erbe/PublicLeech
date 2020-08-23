@@ -4,8 +4,10 @@
 
 # the logging things
 import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 LOGGER = logging.getLogger(__name__)
 
 import asyncio
@@ -35,14 +37,7 @@ async def youtube_dl_call_back(bot, update):
     #
     current_user_id = update.message.reply_to_message.from_user.id
     current_touched_user_id = update.from_user.id
-    if current_user_id != current_touched_user_id:
-        await bot.answer_callback_query(
-            callback_query_id=update.id,
-            text="who are you? 🤪🤔🤔🤔",
-            show_alert=True,
-            cache_time=0
-        )
-        return False, None
+
     user_working_dir = os.path.join(DOWNLOAD_LOCATION, str(current_user_id))
     # create download directory, if not exist
     if not os.path.isdir(user_working_dir):
@@ -90,15 +85,23 @@ async def youtube_dl_call_back(bot, update):
     if "fulltitle" in response_json:
         description = response_json["fulltitle"][0:1021]
         # escape Markdown and special characters
+    if "description" in response_json:
+        description = response_json["description"][0:1021]
+    LOGGER.info(description)
     #
     tmp_directory_for_each_user = os.path.join(
         DOWNLOAD_LOCATION,
-        str(update.from_user.id)
+        str(update.from_user.id),
+        # https://t.me/c/1235155926/33801
+        str(update.message.message_id)
     )
     if not os.path.isdir(tmp_directory_for_each_user):
         os.makedirs(tmp_directory_for_each_user)
     download_directory = tmp_directory_for_each_user
-    download_directory = os.path.join(tmp_directory_for_each_user, custom_file_name)
+    download_directory = os.path.join(
+        tmp_directory_for_each_user,
+        custom_file_name
+    )
     command_to_exec = []
     if tg_send_type == "audio":
         command_to_exec = [
@@ -179,7 +182,8 @@ async def youtube_dl_call_back(bot, update):
             tmp_directory_for_each_user,
             user_id,
             {},
-            True
+            True,
+            description
         )
         LOGGER.info(final_response)
         #
