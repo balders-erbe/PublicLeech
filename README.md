@@ -2,14 +2,32 @@
 
 A Torrent, youtube-dl Leecher, and Uploader!
 
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the [COPYING](./COPYING) for more details.
+
 ## installing
 
 ### The Eas(iest) Way
 
-[![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)
+- Install Docker by following the [official docker docs](https://docs.docker.com/engine/install/debian/)
 
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
-###### - ~~~all that glitters is (not) gold~~~
+- Start docker daemon [skip if already running]:
+```sh
+dockerd
+```
+- Build Docker image:
+```sh
+docker build . -t public-leech
+```
+- Run the image:
+```sh
+docker run public-leech
+```
+
+It is not recommended to use "sudo", un-necessarily, in a GNU/Linux system.
+GNU/Linux Permissions are highly customisable, and it is generally not required to have "ROOT" permission, ~~unless you know what you are doing~~.
+You can still install all the dependencies in your system [with ROOT permissions], but please be aware of the potential issues when doing so. The installed packages may conflict with the system package manager's installed packages, which can cause trouble down the road and errors when upgrading conflicting packages.
+**You have been warned.**
+
 
 ### The Legacy Way
 Simply clone the repository and run the main file:
@@ -20,27 +38,7 @@ cd PublicLeech
 python3 -m venv venv
 . ./venv/bin/activate
 pip install -r requirements.txt
-# <Create config.py appropriately>
 python3 -m tobrot
-```
-
-### an example config.py 👇
-```py
-from tobrot.sample_config import Config
-
-class Config(Config):
-    TG_BOT_TOKEN = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11"
-    # These example values won't work. You must get your own app_id and
-    # api_hash from https://my.telegram.org, under API Development.
-    APP_ID = 6
-    API_HASH = "eb06d4abfb49dc3eeb1aeb98ae0f581e"
-    # please read https://t.me/c/1279877202/74
-    # if you have not read the above README
-    AUTH_CHANNEL = [
-        -1001234567890,
-        7351948,
-        -456790
-    ]
 ```
 
 ### Variable Explanations
@@ -110,7 +108,6 @@ You can add multiple IDs seperated by space.
 ## How to Use?
 
 * send any link, and click on the available buttons.
-  - due to ~~Telegram~~ limitations, the buttons will only work, if the bot was created by you, or you are in the same region as the Telegram bot creator.
 
 * if you have disabled `SHOULD_USE_BUTTONS`, you can read the [Commandi](./tobrot/dinmamoc.py) file, to know about the commands.
   - [COMMANDI_LEECH](./tobrot/dinmamoc.py#L23) can take multiple arguments

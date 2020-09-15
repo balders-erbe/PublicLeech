@@ -16,13 +16,13 @@ from tobrot import (
     MAX_MESSAGE_LENGTH
 )
 from tobrot.helper_funcs.download_aria_p_n import (
-    call_apropriate_function, aria_start
+    aria_start
 )
 from tobrot.helper_funcs.upload_to_tg import upload_to_tg
 from tobrot.dinmamoc import Commandi
 from tobrot.amocmadin import Loilacaztion
 from tobrot.helper_funcs.display_progress import (
-    TimeFormatter,
+    time_formatter,
     humanbytes
 )
 
@@ -72,7 +72,7 @@ async def status_message_f(client, message):
     if msg == "":
         msg = Loilacaztion.NO_TOR_STATUS
 
-    currentTime = TimeFormatter((time.time() - BOT_START_TIME))
+    currentTime = time_formatter((time.time() - BOT_START_TIME))
     total, used, free = shutil.disk_usage(".")
     total = humanbytes(total)
     used = humanbytes(used)
@@ -100,7 +100,7 @@ async def cancel_message_f(client, message):
         try:
             downloads = aria_i_p.get_download(g_id)
             LOGGER.info(downloads)
-            LOGGER.info(downloads.remove(force=True))
+            LOGGER.info(downloads.remove(force=True, files=True))
             await i_m_s_e_g.edit_text(
                 Loilacaztion.TOR_CANCELLED
             )

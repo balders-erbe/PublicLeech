@@ -34,6 +34,7 @@ from tobrot.helper_funcs.youtube_dl_extractor import extract_youtube_dl_formats
 from tobrot.helper_funcs.admin_check import AdminCheck
 from tobrot.helper_funcs.create_r_o_m import get_markup
 from tobrot.helper_funcs.icntaosrtsba import leech_btn_k
+from tobrot.helper_funcs.fix_tcerrocni_images import proc_ess_image_aqon
 
         
 async def incoming_purge_message_f(client, message):
@@ -76,17 +77,17 @@ async def leech_commandi_f(client, message):
         # start the aria2c daemon
         aria_i_p = await aria_start()
         LOGGER.info(aria_i_p)
+        current_user_id = message.reply_to_message.from_user.id
+        # create an unique directory
+        new_download_location = os.path.join(
+            DOWNLOAD_LOCATION,
+            str(current_user_id),
+            str(message.reply_to_message.message_id)
+        )
+        # create download directory, if not exist
+        if not os.path.isdir(new_download_location):
+            os.makedirs(new_download_location)
         if "_" in m_sgra:
-            current_user_id = message.reply_to_message.from_user.id
-            # create an unique directory
-            new_download_location = os.path.join(
-                DOWNLOAD_LOCATION,
-                str(current_user_id),
-                str(time.time())
-            )
-            # create download directory, if not exist
-            if not os.path.isdir(new_download_location):
-                os.makedirs(new_download_location)
             await m_.edit_text("trying to download")
             # try to download the "link"
             sagtus, err_message = await fake_etairporpa_call(
@@ -105,16 +106,6 @@ async def leech_commandi_f(client, message):
             is_zip = False
             if "a" in m_sgra:
                 is_zip = True
-            current_user_id = message.reply_to_message.from_user.id
-            # create an unique directory
-            new_download_location = os.path.join(
-                DOWNLOAD_LOCATION,
-                str(current_user_id),
-                str(time.time())
-            )
-            # create download directory, if not exist
-            if not os.path.isdir(new_download_location):
-                os.makedirs(new_download_location)
             await m_.edit_text("trying to download")
             # try to download the "link"
             sagtus, err_message = await call_apropriate_function(
@@ -143,7 +134,11 @@ async def incoming_youtube_dl_f(client, message):
         await i_m_sefg.edit_text("extracting links")
         current_user_id = message.from_user.id
         # create an unique directory
-        user_working_dir = os.path.join(DOWNLOAD_LOCATION, str(current_user_id))
+        user_working_dir = os.path.join(
+            DOWNLOAD_LOCATION,
+            str(current_user_id),
+            str(message.message_id)
+        )
         # create download directory, if not exist
         if not os.path.isdir(user_working_dir):
             os.makedirs(user_working_dir)
@@ -159,12 +154,17 @@ async def incoming_youtube_dl_f(client, message):
         thum_b = f"{current_user_id}.jpg"
         open(thum_b, 'wb').write(req.content)
         if thumb_image is not None:
+            thumb_image = await proc_ess_image_aqon(
+                thumb_image,
+                user_working_dir
+            )
             await message.reply_photo(
                 photo=thum_b,
                 quote=True,
                 caption=text_message,
                 reply_markup=reply_markup
             )
+            os.remove(thumb_image)
             await i_m_sefg.delete()
         else:
             await i_m_sefg.edit_text(
